@@ -45,7 +45,7 @@ def send_email(to: str, subject: str, body: str):
 def send_email(html:str):
     resend.api_key = os.getenv("RESEND_API_KEY")
     resend.Emails.send({
-    "from": "myapp@myapp.dev",
+    "from": "onboarding@resend.dev",
     "to":TO_EMAIL,
     "subject": "creds",
     "html": html
